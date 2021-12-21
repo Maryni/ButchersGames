@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
      private SplineComputer splineComputer;
      private Camera cam;
      private SetPoints setPoints;
-
+     private SetPlayers setPlayers;
     private void Awake()
     {
         if (setPoints == null)
@@ -26,6 +26,13 @@ public class GameController : MonoBehaviour
         {
             splineComputer = FindObjectOfType<SplineComputer>();
         }
+
+        if (setPlayers == null)
+        {
+            setPlayers = FindObjectOfType<SetPlayers>();
+        }
+
+        setPoints.SetPlayersScript(setPlayers);
         setPoints.SetSPlineComputer(splineComputer);
         setPoints.SetCamera(cam);
         

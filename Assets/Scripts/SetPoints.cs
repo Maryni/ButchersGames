@@ -7,9 +7,10 @@ using UnityEngine;
 
 public class SetPoints : MonoBehaviour
 {
-    
+    [SerializeField] private float modPoint;
     [SerializeField] private List<Vector3> pointsList;
     [SerializeField] private Vector3 mousePos;
+    private SetPlayers setPlayers;
     private SplineComputer splineComputer;
     private bool mousePressed;
     private Camera cam;
@@ -46,16 +47,17 @@ public class SetPoints : MonoBehaviour
         this.splineComputer = splineComputer;
     }
 
+    public void SetPlayersScript(SetPlayers setPlayers)
+    {
+        this.setPlayers = setPlayers;
+    }
+
     private void AddPoints()
     {
-        Debug.Log($"mousePos = {mousePos}");
-        Debug.Log("outside|outside");
         if (mousePressed)
         {
-            Debug.Log("inside|outside");
             if (!pointsList.Contains(mousePos))
             {
-                Debug.Log("inside|inside");
                 pointsList.Add(mousePos);
             }
         }
@@ -64,12 +66,21 @@ public class SetPoints : MonoBehaviour
     private void SetPointsToNodes()
     {
         points = new SplinePoint[pointsList.Count];
+        SplineComputer computer = FindObjectOfType<SplineComputer>();
         for (int i = 0; i < pointsList.Count; i++)
         {
-            points[i].position = new Vector3(pointsList[i].x,0f,pointsList[i].y);
+            points[i].position = new Vector3((pointsList[i].x * modPoint)+ computer.transform.position.x,0f,(pointsList[i].y * modPoint)+computer.transform.position.z);
+            for(int j = 0;j < setPlayers.PlayersList.Count; j++)
+            {
+                setPlayers.ActivatePlayer(j);
+                setPlayers.SetPositionPlayerOnPoint(points[i].position,j);
+                
+     
+            }
+            Debug.Log($"point[{i}] = {points[i].position} | after");
+            
         }
         splineComputer.SetPoints(points);
-        splineComputer.GetPoints();
     }
 
     private void RemoveOldPoints()
